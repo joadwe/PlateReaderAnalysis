@@ -6,8 +6,6 @@
 % clear previous run
 clear; close all; clc
 
-% filename = '230120_BCA_PC3-PIP_PhenolRed_10-20-22 copy.xlsx'
-
 % allow user to select the spreadsheet
 [file,path]=uigetfile({'*.xlsx','*.csv'},'File Selector');
 
