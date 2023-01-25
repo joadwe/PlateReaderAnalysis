@@ -6,11 +6,19 @@
 % clear previous run
 clear; close all; clc
 
+% define start (top left) of plate absorbance data
+RangeStart = 'B15';
+
 % allow user to select the spreadsheet
 [file,path]=uigetfile({'*.xlsx','*.csv'},'File Selector');
 
+% create full filepath name
 filename = fullfile(path,file);
-data = readmatrix(filename,'Sheet','Microplate End point','Range','B15:M22'); % import raw sheets
+
+Range = [RangeStart,':',char(double(RangeStart(1))+11), num2str(str2num(RangeStart(2:end))+7)];
+
+% import absorbance data and plate map from spreadsheet
+data = readmatrix(filename,'Sheet','Microplate End point','Range',Range); % import raw sheets
 map = readcell(filename,'Sheet','Plate Map'); % import plate map to link samples
 
 if sum(cell2mat(cellfun(@isnumeric, map(1,2:end),'UniformOutput',false))) > 0
@@ -121,7 +129,7 @@ Export = [UniqueNames.Sample, num2cell(Derived_Conc(:,1)),Outcome];
 writecell(Export(sortInd,:), filename, 'Sheet','Concentration')
 
 % export QC data
-print(fig, 'Standard Curve.jpeg','-djpeg','-r300')
+print(fig, fullfile(path,'Standard Curve.jpeg'),'-djpeg','-r300')
 close(fig)
 
 function [Export_Sample_Conc_Extr, fig] = BCA_Analysis(Conc, Abs, Samples, LinRegion)
